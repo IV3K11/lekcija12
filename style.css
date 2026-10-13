@@ -1,0 +1,51 @@
+body {
+    background-color: #f5f5f5;
+}
+
+/* Login and Sign Up */
+.auth-container {
+    max-width: 380px;
+    margin: 80px auto;
+    padding: 30px;
+}
+
+.auth-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.auth-container .form-control {
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+.auth-container .btn {
+    width: 100%;
+}
+
+.auth-container small {
+    display: block;
+    margin-top: 12px;
+}
+
+/* Dashboard */
+.sidebar {
+    min-height: calc(100vh - 56px);
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px 20px;
+    color: #333;
+    text-decoration: none;
+}
+
+.sidebar a:hover {
+    background-color: #e9ecef;
+}
+
+.dashboard-content {
+    padding: 30px;
+} 
