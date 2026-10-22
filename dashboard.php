@@ -1,40 +1,93 @@
-<?php include("header.php"); ?>
+<?php
+session_start();
+require_once "config.php";
 
-<!-- Top navigation -->
-<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
+if (!isset($_SESSION["username"])) {
+    header("Location: login.php");
+    exit();
+}
+
+$sql = "SELECT * FROM new_users";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="dashboard.php">Digital School</a>
-        
-        <div class="navbar-nav ms-auto">
-            <a class="nav-link" href="login.php">Sign out</a>
-        </div>
+        <span class="navbar-brand">
+            Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?>
+        </span>
+        <a href="logout.php" class="btn btn-outline-light">Sign out</a>
     </div>
 </nav>
 
-<!-- Main layout -->
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 sidebar p-0">
-            <a href="dashboard.php" class="fw-bold">Dashboard</a>
-            <a href="login.php">Login</a>
-            <a href="signup.php">Sign Up</a>
-        </nav>
 
-        <!-- Main content -->
-        <main class="col-md-9 col-lg-10 dashboard-content">
-            <h1>Dashboard</h1>
-            <p>Welcome to Digital School!</p>
+        <div class="col-md-2 sidebar">
+            <h5 class="mt-4 ms-3">Menu</h5>
+            <a href="dashboard.php">Dashboard</a>
+            <a href="productDashboard.php">Products Dashboard</a>
+            <a href="profile.php">Edit Profile</a>
+        </div>
 
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h5 class="card-title">Welcome!</h5>
-                    <p class="card-text">This is our Bootstrap dashboard.</p>
-                    <a href="signup.php" class="btn btn-primary">Create Account</a>
+        <div class="col-md-10 main-content">
+            <div class="row">
+                <div class="col-md-12 main-content">
+                    
+                    <h2>Dashboard</h2>
+                    <hr>
+
+                    <h4 class="mt-4">All Registered Users</h4>
+
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($users as $user): ?>
+                                <tr>
+                                    <td><?php echo $user['id']; ?></td>
+                                    <td><?php echo htmlspecialchars($user['username']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['email']); ?></td>
+                                    <td>
+                                        <a href="profile.php?id=<?php echo $user['id']; ?>" class="btn btn-sm btn-primary">Update</a>
+                                        <form action="delete.php" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                            <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
                 </div>
             </div>
-        </main>
+        </div>
+
     </div>
 </div>
 
-<?php include("footer.php"); ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
